@@ -2,12 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=NAC_Congregation_Apostles_Summary_Printable_UPDATED.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d3a6e">
+  <meta name="description" content="New Apostolic Church congregation reporting and management suite.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NAC Suite">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/nac-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/nac-icon.svg">
   <title>NAC Congregation Suite</title>
-  <link rel="canonical" href="NAC_Congregation_Apostles_Summary_Printable_UPDATED.html">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    #app-frame { display: block; width: 100%; height: 100%; border: 0; }
+    #install-button {
+      display: none;
+      position: fixed;
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      z-index: 10;
+      border: 0;
+      border-radius: 999px;
+      padding: .8rem 1.15rem;
+      color: #fff;
+      background: #0d3a6e;
+      box-shadow: 0 3px 12px #0004;
+      font: 600 1rem system-ui, sans-serif;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <p>Opening the <a href="NAC_Congregation_Apostles_Summary_Printable_UPDATED.html">NAC Congregation Suite</a>…</p>
+  <iframe id="app-frame" title="NAC Congregation Suite" src="./NAC_Congregation_Apostles_Summary_Printable_UPDATED.html"></iframe>
+  <button id="install-button" type="button">Install app</button>
+  <script>
+    let installPrompt;
+    const installButton = document.getElementById('install-button');
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      installPrompt = event;
+      installButton.style.display = 'block';
+    });
+    installButton.addEventListener('click', async () => {
+      if (!installPrompt) return;
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+      installButton.style.display = 'none';
+    });
+    window.addEventListener('appinstalled', () => {
+      installButton.style.display = 'none';
+      installPrompt = null;
+    });
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((error) => console.error('Service worker registration failed:', error)));
+    }
+  </script>
 </body>
 </html>
